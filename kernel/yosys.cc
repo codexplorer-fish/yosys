@@ -171,6 +171,7 @@ void memhasher_do()
 void yosys_banner()
 {
 	log("\n");
+	log("String test: %s , Float test: %*.*f\n", "Hello World", 4, 3, 34444.14444);
 	log(" /----------------------------------------------------------------------------\\\n");
 	log(" |  yosys -- Yosys Open SYnthesis Suite                                       |\n");
 	log(" |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |\n");
