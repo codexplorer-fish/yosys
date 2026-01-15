@@ -174,7 +174,7 @@ void yosys_banner()
 	log("String test: %s , Float test: %*.*f\n", "Hello World", 4, 3, 34444.14444);
 	log(" /----------------------------------------------------------------------------\\\n");
 	log(" |  yosys -- Yosys Open SYnthesis Suite                                       |\n");
-	log(" |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |\n");
+	log(" |  Copyright (C) 2012 - 2026  Claire Xenia Wolf <claire@yosyshq.com>         |\n");
 	log(" |  Distributed under an ISC-like license, type \"license\" to see terms        |\n");
 	log(" \\----------------------------------------------------------------------------/\n");
 	log(" %s\n", yosys_maybe_version());
