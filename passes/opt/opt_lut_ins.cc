@@ -63,7 +63,7 @@ struct OptLutInsPass : public Pass {
 
 		for (auto module : design->selected_modules())
 		{
-			log("Optimizing LUTs in %s.\n", log_id(module));
+			log("Optimizing LUTs in %s.\n", module);
 
 			std::vector<Cell *> remove_cells;
 			// Gather LUTs.

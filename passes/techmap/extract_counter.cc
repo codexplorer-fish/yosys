@@ -541,7 +541,7 @@ void counter_worker(
 		{
 			extract_value = *sa.begin();
 			log("  Signal %s declared at %s has COUNT_EXTRACT = %s\n",
-				log_id(port_wire),
+				port_wire,
 				count_reg_src.c_str(),
 				extract_value.c_str());
 
@@ -604,7 +604,7 @@ void counter_worker(
 		{
 			log_error(
 			"Counter extraction is set to FORCE on register %s, but a counter could not be inferred (%s)\n",
-			log_id(port_wire),
+			port_wire,
 			reasons[reason]);
 		}
 		return;
@@ -697,7 +697,7 @@ void counter_worker(
 	//Hook up any parallel outputs
 	for(auto load : extract.pouts)
 	{
-		log("    Counter has parallel output to cell %s port %s\n", log_id(load.cell->name), log_id(load.port));
+		log("    Counter has parallel output to cell %s port %s\n", load.cell->name.unescape(), load.port.unescape());
 	}
 	if(extract.has_pout)
 	{
@@ -731,7 +731,7 @@ void counter_worker(
 		countname.c_str(),
 		extract.count_is_up ? "to" : "from",
 		extract.count_value,
-		log_id(extract.rwire->name),
+		extract.rwire->name.unescape(),
 		count_reg_src.c_str());
 
 	//Optimize the counter
