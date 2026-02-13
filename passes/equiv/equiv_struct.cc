@@ -111,7 +111,7 @@ struct EquivStructWorker
 		}
 
 		auto merged_attr = cell_b->get_strpool_attribute(ID::equiv_merged);
-		merged_attr.insert(log_id(cell_b));
+		merged_attr.insert(cell_b->name.unescape());
 		cell_a->add_strpool_attribute(ID::equiv_merged, merged_attr);
 		module->remove(cell_b);
 	}
