@@ -645,7 +645,7 @@ struct ShowWorker
 			module = mod;
 			if (design->selected_whole_module(module->name)) {
 				if (module->get_blackbox_attribute()) {
-					// log("Skipping blackbox module %s.\n", log_id(module->name));
+						//log("Skipping blackbox module %s.\n", module->name.unescape());
 					continue;
 				} else
 				if (module->cells().size() == 0 && module->connections().empty() && module->processes.empty()) {

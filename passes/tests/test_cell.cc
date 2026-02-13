@@ -1102,7 +1102,7 @@ struct TestCellPass : public Pass {
 				int charcount = 100;
 				for (auto &it : cell_types) {
 					if (charcount > 60) {
-						cell_type_list += stringf("\n%s", + log_id(it.first));
+						cell_type_list += stringf("\n%s", it.first.unescape());
 						charcount = 0;
 					} else
 						cell_type_list += stringf(" %s", it.first.unescape());

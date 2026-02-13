@@ -275,7 +275,7 @@ struct VlogHammerReporter
 				RTLIL::SigSpec undef;
 
 				while (!ce.eval(sig, undef)) {
-					// log_error("Evaluation of y in module %s failed: sig=%s, undef=%s\n", log_id(module->name), log_signal(sig), log_signal(undef));
+					// log_error("Evaluation of y in module %s failed: sig=%s, undef=%s\n", module, log_signal(sig), log_signal(undef));
 					log_warning("Setting signal %s in module %s to undef.\n", log_signal(undef), module->name.unescape());
 					ce.set(undef, RTLIL::Const(RTLIL::State::Sx, undef.size()));
 				}
