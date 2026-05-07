@@ -95,7 +95,7 @@ struct FmcombineWorker
 	void generate()
 	{
 		if (design->module(combined_type)) {
-			// log("Combined module %s already exists.\n", combined_type.unescape());
+			// log("Combined module %s already exists.\n", log_id(combined_type));
 			return;
 		}
 

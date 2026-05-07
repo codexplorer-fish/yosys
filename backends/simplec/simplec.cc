@@ -576,7 +576,7 @@ struct SimplecWorker
 						if (cell == nullptr || topoidx.at(cell) < topoidx.at(c))
 							cell = c;
 
-					string hiername = work->log_prefix + "." + cell->name.unescape();
+					string hiername = work->log_prefix + "." + log_id(cell);
 
 					if (verbose)
 						log("    Evaluating %s (%s, best of %d).\n", hiername, cell->type.unescape(), GetSize(work->dirty_cells));

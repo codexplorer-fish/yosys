@@ -941,7 +941,7 @@ void prep_lut(RTLIL::Design *design, int maxlut)
 		ss << std::endl;
 	}
 	for (const auto &i : table) {
-		ss << "# " << i.second.name.unescape() << std::endl;
+		ss << "# " << log_id(i.second.name) << std::endl;
 		ss << i.first << " " << i.second.area;
 		for (const auto &j : i.second.delays)
 			ss << " " << j;
@@ -985,7 +985,7 @@ void prep_box(RTLIL::Design *design)
 			}
 			log_assert(num_outputs == 1);
 
-			ss << module->name.unescape() << " " << r.first->second.as_int();
+			ss << log_id(module) << " " << r.first->second.as_int();
 			log_assert(module->get_bool_attribute(ID::whitebox));
 			ss << " " << "1";
 			ss << " " << num_inputs << " " << num_outputs << std::endl;
@@ -1000,7 +1000,7 @@ void prep_box(RTLIL::Design *design)
 					first = false;
 				else
 					ss << " ";
-				ss << wire->name.unescape();
+				ss << log_id(wire);
 			}
 			ss << std::endl;
 
@@ -1029,7 +1029,7 @@ void prep_box(RTLIL::Design *design)
 					if (ys_debug(1)) {
 						static std::set<std::pair<IdString,IdString>> seen;
 						if (seen.emplace(module->name, port_name).second) log("%s.%s abc9_required = %d\n", module,
-								port_name.unescape(), it->second.first);
+								log_id(port_name), it->second.first);
 					}
 #endif
 				}
@@ -1074,7 +1074,7 @@ void prep_box(RTLIL::Design *design)
 						outputs.emplace_back(wire, i);
 			}
 
-			ss << module->name.unescape() << " " << module->attributes.at(ID::abc9_box_id).as_int();
+			ss << log_id(module) << " " << module->attributes.at(ID::abc9_box_id).as_int();
 			bool has_model = module->get_bool_attribute(ID::whitebox) || !module->get_bool_attribute(ID::blackbox);
 			ss << " " << (has_model ? "1" : "0");
 			ss << " " << GetSize(inputs) << " " << GetSize(outputs) << std::endl;
@@ -1087,9 +1087,9 @@ void prep_box(RTLIL::Design *design)
 				else
 					ss << " ";
 				if (GetSize(i.wire) == 1)
-					ss << i.wire->name.unescape();
+					ss << log_id(i.wire);
 				else
-					ss << i.wire->name.unescape() << "[" << i.offset << "]";
+					ss << log_id(i.wire) << "[" << i.offset << "]";
 			}
 			ss << std::endl;
 
@@ -1113,9 +1113,9 @@ void prep_box(RTLIL::Design *design)
 				}
 				ss << " # ";
 				if (GetSize(o.wire) == 1)
-					ss << o.wire->name.unescape();
+					ss << log_id(o.wire);
 				else
-					ss << o.wire->name.unescape() << "[" << o.offset << "]";
+					ss << log_id(o.wire) << "[" << o.offset << "]";
 				ss << std::endl;
 			}
 			ss << std::endl;

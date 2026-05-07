@@ -185,10 +185,10 @@ struct EquivSimpleWorker
 					(GetSize(cone_a.cells) + GetSize(cone_b.cells)) - GetSize(cells));
 		#if 0
 			for (auto cell : short_cells_cone_a)
-				log("      A-side cell: %s\n", cell);
+				log("      A-side cell: %s\n", log_id(cell));
 
 			for (auto cell : short_cells_cone_b)
-				log("      B-side cell: %s\n", cell);
+				log("      B-side cell: %s\n", log_id(cell));
 		#endif
 	}
 	void report_new_assume_cells(const pool<Cell*>& extra_problem_cells, int old_size, const pool<Cell*>& problem_cells) const
@@ -199,7 +199,7 @@ struct EquivSimpleWorker
 				old_size - (GetSize(problem_cells) - GetSize(extra_problem_cells)));
 		#if 0
 			for (auto cell : extra_problem_cells)
-				log("      cell: %s\n", cell);
+				log("      cell: %s\n", log_id(cell));
 		#endif
 		}
 	}

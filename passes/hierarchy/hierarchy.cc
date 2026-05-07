@@ -269,7 +269,7 @@ struct IFExpander
 		// Go over all wires in interface, and add replacements to lists.
 		for (auto mod_wire : mod_replace_ports->wires()) {
 			std::string signal_name1 = conn_name.str() + "." + mod_wire->name.unescape();
-			std::string signal_name2 = interface_name.str() + "." + mod_wire->name.unescape();
+			std::string signal_name2 = interface_name.str() + "." + log_id(mod_wire);
 			connections_to_add_name.push_back(RTLIL::IdString(signal_name1));
 			if(module.wire(signal_name2) == nullptr) {
 				log_error("Could not find signal '%s' in '%s'\n",

@@ -233,7 +233,7 @@ struct SimInstance
 
 		if (module->has_processes())
 			log_error("Found processes in simulation hierarchy (in module %s at %s). Run 'proc' first.\n",
-					  module, hiername().c_str());
+					  log_id(module), hiername().c_str());
 
 		if (parent) {
 			log_assert(parent->children.count(instance) == 0);
@@ -905,7 +905,7 @@ struct SimInstance
 		{
 			for (auto cell : formal_database)
 			{
-				string label = cell->name.unescape();
+				string label = log_id(cell);
 				if (cell->attributes.count(ID::src))
 					label = cell->attributes.at(ID::src).decode_string();
 
@@ -1039,7 +1039,7 @@ struct SimInstance
 				for (auto name : hdlname)
 					exit_scope();
 			} else
-				register_signal(signal.first->name.unescape().c_str(), GetSize(signal.first), signal.first, signal.second.first, registers.count(signal.first)!=0);
+				register_signal(log_id(signal.first->name), GetSize(signal.first), signal.first, signal.second.first, registers.count(signal.first)!=0);
 		}
 
 		for (auto &trace_mem : trace_mem_database)

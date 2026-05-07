@@ -1867,7 +1867,7 @@ struct Smt2Backend : public Backend {
 				for (auto &dep : it.second)
 					if (module_deps.count(dep) > 0)
 						goto not_ready_yet;
-				// log("Next in topological sort: %s\n", it.first->name.unescape());
+				// log("Next in topological sort: %s\n", log_id(it.first->name));
 				sorted_modules.push_back(it.first);
 			not_ready_yet:;
 			}

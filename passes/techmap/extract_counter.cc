@@ -611,7 +611,7 @@ void counter_worker(
 	}
 
 	//Get new cell name
-	string countname = string("$COUNTx$") + extract.rwire->name.unescape();
+	string countname = string("$COUNTx$") + log_id(extract.rwire->name.str());
 
 	//Wipe all of the old connections to the ALU
 	cell->unsetPort(ID::A);
@@ -887,13 +887,13 @@ struct ExtractCounterPass : public Pass {
 
 			for(auto cell : cells_to_remove)
 			{
-				//log("Removing cell %s\n", cell);
+				//log("Removing cell %s\n", log_id(cell->name));
 				module->remove(cell);
 			}
 
 			for(auto cpair : cells_to_rename)
 			{
-				//log("Renaming cell %s to %s\n", cpair.first, cpair.second);
+				//log("Renaming cell %s to %s\n", log_id(cpair.first->name), cpair.second);
 				module->rename(cpair.first, cpair.second);
 			}
 		}
