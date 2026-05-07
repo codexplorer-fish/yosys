@@ -232,9 +232,9 @@ struct EquivSimpleWorker
 	static void report_missing_model(Cell* cell)
 	{
 		if (cell->is_builtin_ff())
-			log_cmd_error("No SAT model available for async FF cell %s (%s).  Consider running `async2sync` or `clk2fflogic` first.\n", cell, cell->type.unescape());
+			log_cmd_error("No SAT model available for async FF cell %s (%s).  Consider running `async2sync` or `clk2fflogic` first.\n", log_id(cell), log_id(cell->type));
 		else
-			log_cmd_error("No SAT model available for cell %s (%s).\n", cell, cell->type.unescape());
+			log_cmd_error("No SAT model available for cell %s (%s).\n", log_id(cell), log_id(cell->type));
 	}
 
 	void prepare_ezsat(int ez_context, SigBit bit_a, SigBit bit_b)
@@ -291,7 +291,7 @@ struct EquivSimpleWorker
 		pool<SigBit> seed_b = { bit_b };
 
 		if (cfg.verbose) {
-			log("  Trying to prove $equiv cell %s:\n", cell);
+			log("  Trying to prove $equiv cell %s:\n", log_id(cell));
 			log("    A = %s, B = %s, Y = %s\n", log_signal(bit_a), log_signal(bit_b), log_signal(cell->getPort(ID::Y)));
 		} else {
 			log("  Trying to prove $equiv for %s:", log_signal(cell->getPort(ID::Y)));
@@ -502,7 +502,7 @@ struct EquivSimplePass : public Pass {
 				continue;
 
 			log("Found %d unproven $equiv cells (%d groups) in %s:\n",
-					unproven_cells_counter, GetSize(unproven_equiv_cells), module);
+					unproven_cells_counter, GetSize(unproven_equiv_cells), log_id(module));
 
 			for (auto cell : module->cells()) {
 				if (!ct.cell_known(cell->type))

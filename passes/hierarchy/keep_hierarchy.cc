@@ -42,7 +42,7 @@ struct ThresholdHierarchyKeeping {
 			return 0;
 
 		if (module->get_blackbox_attribute())
-			log_error("Missing cost information on instanced blackbox %s\n", module);
+			log_error("Missing cost information on instanced blackbox %s\n", log_id(module));
 
 		if (done.count(module))
 			return done.at(module);
@@ -61,13 +61,13 @@ struct ThresholdHierarchyKeeping {
 				RTLIL::Module *submodule = design->module(cell->type);
 				if (!submodule)
 					log_error("Hierarchy contains unknown module '%s' (instanced as %s in %s)\n",
-							  cell->type.unescape(), cell, module);
+							  log_id(cell->type), log_id(cell), log_id(module));
 				size += visit(submodule);
 			}
 		}
 
 		if (size > threshold) {
-			log("Keeping %s (estimated size above threshold: %" PRIu64 " > %" PRIu64 ").\n", module, size, threshold);
+			log("Keeping %s (estimated size above threshold: %" PRIu64 " > %" PRIu64 ").\n", log_id(module), size, threshold);
 			module->set_bool_attribute(ID::keep_hierarchy);
 			size = 0;
 		}
@@ -124,7 +124,7 @@ struct KeepHierarchyPass : public Pass {
 			worker.visit(top);
 		} else {
 			for (auto module : design->selected_modules()) {
-				log("Marking %s.\n", module);
+				log("Marking %s.\n", log_id(module));
 				module->set_bool_attribute(ID::keep_hierarchy);
 			}
 		}

@@ -328,7 +328,7 @@ struct ModuleItem {
 	[[nodiscard]] Hasher hash_into(Hasher h) const { h.eat(ptr); return h; }
 };
 
-static inline void log_dump_val_worker(typename IdTree<ModuleItem>::Cursor cursor ) { log("%p %s", cursor.target, cursor.scope_name.unescape()); }
+static inline void log_dump_val_worker(typename IdTree<ModuleItem>::Cursor cursor ) { log("%p %s", cursor.target, log_id(cursor.scope_name)); }
 
 template<typename T>
 static inline void log_dump_val_worker(const typename std::unique_ptr<T> &cursor ) { log("unique %p", cursor.get()); }

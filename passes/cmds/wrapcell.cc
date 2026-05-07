@@ -70,7 +70,7 @@ std::optional<std::string> format_with_params(std::string fmt, const dict<IdStri
 			} else {
 				auto id = RTLIL::escape_id(std::string(beg, it));
 				if (!parameters.count(id)) {
-					log("Parameter %s referenced in format string '%s' not found\n", id, fmt);
+					log("Parameter %s referenced in format string '%s' not found\n", log_id(id), fmt);
 					return {};
 				}
 
@@ -210,7 +210,7 @@ struct WrapcellPass : Pass {
 
 				if (!ct.cell_known(cell->type))
 					log_error("Non-internal cell type '%s' on cell '%s' in module '%s' unsupported\n",
-							  cell->type.unescape(), cell, module);
+							  log_id(cell->type), log_id(cell), log_id(module));
 
 				std::vector<std::pair<IdString, int>> unused_outputs, used_outputs;
 				for (auto conn : cell->connections()) {
@@ -233,7 +233,7 @@ struct WrapcellPass : Pass {
 				std::optional<std::string> unescaped_name = format_with_params(name_fmt, cell->parameters, context);
 				if (!unescaped_name)
 					log_error("Formatting error when processing cell '%s' in module '%s'\n",
-							  cell, module);
+							  log_id(cell), log_id(module));
 
 				IdString name = RTLIL::escape_id(unescaped_name.value());
 				if (d->module(name))
@@ -274,7 +274,7 @@ struct WrapcellPass : Pass {
 
 						if (!value)
 							log_error("Formatting error when processing cell '%s' in module '%s'\n",
-									  cell, module);
+									  log_id(cell), log_id(module));
 
 						subm->set_string_attribute(rule.name, value.value());
 					}

@@ -340,7 +340,7 @@ struct OptDffWorker
 						initvals.remove_init(ff.sig_q[i]);
 						module->connect(ff.sig_q[i], State::S0);
 						log("Handling always-active CLR at position %d on %s (%s) from module %s (changing to const driver).\n",
-								i, cell, cell->type.unescape(), module);
+								i, log_id(cell), log_id(cell->type), log_id(module));
 						sr_removed = true;
 					} else if (ff.sig_set[i] == (ff.pol_set ? State::S1 : State::S0) || (!opt.keepdc && ff.sig_set[i] == State::Sx)) {
 						// Always-active set — connect Q bit to 1 if clear inactive, 0 if reset active.
@@ -353,7 +353,7 @@ struct OptDffWorker
 							module->addNot(NEW_ID, ff.sig_clr[i], ff.sig_q[i]);
 						}
 						log("Handling always-active SET at position %d on %s (%s) from module %s (changing to combinatorial circuit).\n",
-								i, cell, cell->type.unescape(), module);
+								i, log_id(cell), log_id(cell->type), log_id(module));
 						sr_removed = true;
 					} else {
 						keep_bits.push_back(i);
@@ -378,7 +378,7 @@ struct OptDffWorker
 							failed = true;
 					if (!failed) {
 						log("Removing never-active CLR on %s (%s) from module %s.\n",
-								cell, cell->type.unescape(), module);
+								log_id(cell), log_id(cell->type), log_id(module));
 						ff.has_sr = false;
 						ff.has_arst = true;
 						ff.pol_arst = ff.pol_set;
@@ -394,7 +394,7 @@ struct OptDffWorker
 							failed = true;
 					if (!failed) {
 						log("Removing never-active SET on %s (%s) from module %s.\n",
-								cell, cell->type.unescape(), module);
+								log_id(cell), log_id(cell->type), log_id(module));
 						ff.has_sr = false;
 						ff.has_arst = true;
 						ff.pol_arst = ff.pol_clr;
@@ -424,7 +424,7 @@ struct OptDffWorker
 					}
 					if (!failed) {
 						log("Converting CLR/SET to ARST on %s (%s) from module %s.\n",
-								cell, cell->type.unescape(), module);
+								log_id(cell), log_id(cell->type), log_id(module));
 						ff.has_sr = false;
 						ff.has_arst = true;
 						ff.val_arst = val_arst_builder.build();
@@ -439,13 +439,13 @@ struct OptDffWorker
 				if (ff.sig_aload == (ff.pol_aload ? State::S0 : State::S1) || (!opt.keepdc && ff.sig_aload == State::Sx)) {
 					// Always-inactive enable — remove.
 					log("Removing never-active async load on %s (%s) from module %s.\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_aload = false;
 					changed = true;
 				} else if (ff.sig_aload == (ff.pol_aload ? State::S1 : State::S0)) {
 					// Always-active enable.  Make a comb circuit, nuke the FF/latch.
 					log("Handling always-active async load on %s (%s) from module %s (changing to combinatorial circuit).\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.remove();
 					if (ff.has_sr) {
 						SigSpec tmp;
@@ -487,7 +487,7 @@ struct OptDffWorker
 					continue;
 				} else if (ff.sig_ad.is_fully_const() && !ff.has_arst && !ff.has_sr) {
 					log("Changing const-value async load to async reset on %s (%s) from module %s.\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_arst = true;
 					ff.has_aload = false;
 					ff.sig_arst = ff.sig_aload;
@@ -501,13 +501,13 @@ struct OptDffWorker
 				if (ff.sig_arst == (ff.pol_arst ? State::S0 : State::S1)) {
 					// Always-inactive reset — remove.
 					log("Removing never-active ARST on %s (%s) from module %s.\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_arst = false;
 					changed = true;
 				} else if (ff.sig_arst == (ff.pol_arst ? State::S1 : State::S0) || (!opt.keepdc && ff.sig_arst == State::Sx)) {
 					// Always-active async reset — change to const driver.
 					log("Handling always-active ARST on %s (%s) from module %s (changing to const driver).\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.remove();
 					module->connect(ff.sig_q, ff.val_arst);
 					did_something = true;
@@ -519,13 +519,13 @@ struct OptDffWorker
 				if (ff.sig_srst == (ff.pol_srst ? State::S0 : State::S1)) {
 					// Always-inactive reset — remove.
 					log("Removing never-active SRST on %s (%s) from module %s.\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_srst = false;
 					changed = true;
 				} else if (ff.sig_srst == (ff.pol_srst ? State::S1 : State::S0) || (!opt.keepdc && ff.sig_srst == State::Sx)) {
 					// Always-active sync reset — connect to D instead.
 					log("Handling always-active SRST on %s (%s) from module %s (changing to const D).\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_srst = false;
 					if (!ff.ce_over_srst)
 						ff.has_ce = false;
@@ -539,7 +539,7 @@ struct OptDffWorker
 					// Always-inactive enable — remove.
 					if (ff.has_srst && !ff.ce_over_srst) {
 						log("Handling never-active EN on %s (%s) from module %s (connecting SRST instead).\n",
-								cell, cell->type.unescape(), module);
+								log_id(cell), log_id(cell->type), log_id(module));
 						// FF with sync reset — connect the sync reset to D instead.
 						ff.pol_ce = ff.pol_srst;
 						ff.sig_ce = ff.sig_srst;
@@ -548,7 +548,7 @@ struct OptDffWorker
 						changed = true;
 					} else if (!opt.keepdc || ff.val_init.is_fully_def()) {
 						log("Handling never-active EN on %s (%s) from module %s (removing D path).\n",
-								cell, cell->type.unescape(), module);
+								log_id(cell), log_id(cell->type), log_id(module));
 						// The D input path is effectively useless, so remove it (this will be a D latch, SR latch, or a const driver).
 						ff.has_ce = ff.has_clk = ff.has_srst = false;
 						changed = true;
@@ -562,7 +562,7 @@ struct OptDffWorker
 					// Always-active enable.  Just remove it.
 					// For FF, just remove the useless enable.
 					log("Removing always-active EN on %s (%s) from module %s.\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_ce = false;
 					changed = true;
 				}
@@ -572,7 +572,7 @@ struct OptDffWorker
 				if (!opt.keepdc || ff.val_init.is_fully_def()) {
 					// Const clock — the D input path is effectively useless, so remove it (this will be a D latch, SR latch, or a const driver).
 					log("Handling const CLK on %s (%s) from module %s (removing D path).\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_ce = ff.has_clk = ff.has_srst = false;
 					changed = true;
 				} else {
@@ -590,7 +590,7 @@ struct OptDffWorker
 				if (ff.has_clk && ff.has_srst) {
 					// FF with sync reset — connect the sync reset to D instead.
 					log("Handling D = Q on %s (%s) from module %s (conecting SRST instead).\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					if (ff.has_ce && ff.ce_over_srst) {
 						if (!ff.pol_ce) {
 							if (ff.is_fine)
@@ -620,7 +620,7 @@ struct OptDffWorker
 				} else if (!opt.keepdc || ff.val_init.is_fully_def()) {
 					// The D input path is effectively useless, so remove it (this will be a const-input D latch, SR latch, or a const driver).
 					log("Handling D = Q on %s (%s) from module %s (removing D path).\n",
-							cell, cell->type.unescape(), module);
+							log_id(cell), log_id(cell->type), log_id(module));
 					ff.has_gclk = ff.has_clk = ff.has_ce = false;
 					changed = true;
 				}
@@ -628,7 +628,7 @@ struct OptDffWorker
 
 			if (ff.has_aload && !ff.has_clk && ff.sig_ad == ff.sig_q) {
 				log("Handling AD = Q on %s (%s) from module %s (removing async load path).\n",
-						cell, cell->type.unescape(), module);
+						log_id(cell), log_id(cell->type), log_id(module));
 				ff.has_aload = false;
 				changed = true;
 			}
@@ -704,7 +704,7 @@ struct OptDffWorker
 						if (new_cell)
 							dff_cells.push_back(new_cell);
 						log("Adding SRST signal on %s (%s) from module %s (D = %s, Q = %s, rval = %s).\n",
-								cell, cell->type.unescape(), module, log_signal(new_ff.sig_d), log_signal(new_ff.sig_q), log_signal(new_ff.val_srst));
+								log_id(cell), log_id(cell->type), log_id(module), log_signal(new_ff.sig_d), log_signal(new_ff.sig_q), log_signal(new_ff.val_srst));
 					}
 
 					if (remaining_indices.empty()) {
@@ -767,7 +767,7 @@ struct OptDffWorker
 						if (new_cell)
 							dff_cells.push_back(new_cell);
 						log("Adding EN signal on %s (%s) from module %s (D = %s, Q = %s).\n",
-								cell, cell->type.unescape(), module, log_signal(new_ff.sig_d), log_signal(new_ff.sig_q));
+								log_id(cell), log_id(cell->type), log_id(module), log_signal(new_ff.sig_d), log_signal(new_ff.sig_q));
 					}
 
 					if (remaining_indices.empty()) {
@@ -879,7 +879,7 @@ struct OptDffWorker
 					}
 				}
 				log("Setting constant %d-bit at position %d on %s (%s) from module %s.\n", val ? 1 : 0,
-						i, cell, cell->type.unescape(), module);
+						i, log_id(cell), log_id(cell->type), log_id(module));
 
 				initvals.remove_init(ff.sig_q[i]);
 				module->connect(ff.sig_q[i], val);

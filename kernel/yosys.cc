@@ -1169,7 +1169,7 @@ struct ScriptCmdPass : public Pass {
 					if (!mod->selected(w))
 						continue;
 					if (!c.second.is_fully_const())
-						log_error("RHS of selected wire %s.%s is not constant.\n", mod, w);
+						log_error("RHS of selected wire %s.%s is not constant.\n", log_id(mod), log_id(w));
 					auto v = c.second.as_const();
 					Pass::call_on_module(design, mod, v.decode_string());
 				}

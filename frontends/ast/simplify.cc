@@ -1393,7 +1393,7 @@ bool AstNode::simplify(bool const_fold, int stage, int width_hint, bool sign_hin
 				const RTLIL::Wire *ref = module->wire(port_name);
 				if (ref == nullptr)
 					input_error("Cell instance refers to port %s which does not exist in module %s!.\n",
-							port_name.unescape(), module->name.unescape());
+							log_id(port_name), log_id(module->name));
 
 				// select the argument, if present
 				log_assert(child->children.size() <= 1);
@@ -3145,7 +3145,7 @@ skip_dynamic_range_lvalue_expansion:;
 	if (stage > 1 && type == AST_IDENTIFIER && id2ast != nullptr && id2ast->type == AST_MEMORY && !in_lvalue &&
 			children.size() == 1 && children[0]->type == AST_RANGE && children[0]->children.size() == 1) {
 		if (integer < (unsigned)id2ast->unpacked_dimensions)
-			input_error("Insufficient number of array indices for %s.\n", str);
+			input_error("Insufficient number of array indices for %s.\n", log_id(str));
 		newNode = std::make_unique<AstNode>(location, AST_MEMRD, children[0]->children[0]->clone());
 		newNode->str = str;
 		newNode->id2ast = id2ast;
@@ -3207,7 +3207,7 @@ skip_dynamic_range_lvalue_expansion:;
 			(children[0]->children.size() == 1 || children[0]->children.size() == 2) && children[0]->children[0]->type == AST_RANGE)
 	{
 		if (children[0]->integer < (unsigned)children[0]->id2ast->unpacked_dimensions)
-			input_error("Insufficient number of array indices for %s.\n", str);
+			input_error("Insufficient number of array indices for %s.\n", log_id(str));
 
 		std::stringstream sstr;
 		sstr << "$memwr$" << children[0]->str << "$" << RTLIL::encode_filename(*location.begin.filename) << ":" << location.begin.line << "$" << (autoidx++);
@@ -4955,7 +4955,7 @@ void AstNode::mem2reg_as_needed_pass1(dict<AstNode*, pool<std::string>> &mem2reg
 		AstNode *mem = id2ast;
 
 		if (integer < (unsigned)mem->unpacked_dimensions)
-			input_error("Insufficient number of array indices for %s.\n", str);
+			input_error("Insufficient number of array indices for %s.\n", log_id(str));
 
 		// flag if used after blocking assignment (in same proc)
 		if ((proc_flags[mem] & AstNode::MEM2REG_FL_EQ1) && !(mem2reg_candidates[mem] & AstNode::MEM2REG_FL_EQ2)) {

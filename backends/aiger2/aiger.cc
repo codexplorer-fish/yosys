@@ -115,7 +115,7 @@ struct Index {
 						continue;
 					if (!submodule || submodule->get_blackbox_attribute())
 						log_error("Unsupported cell type: %s (%s in %s)\n",
-								  cell->type.unescape(), cell, m);
+								  log_id(cell->type), log_id(cell), log_id(m));
 				}
 			}
 		}
@@ -492,7 +492,7 @@ struct Index {
 			Design *design = index.design;
 			auto &minfo = leaf_minfo(index);
 			if (!minfo.suboffsets.count(cell))
-				log_error("Reached unsupport cell %s (%s in %s)\n", cell->type.unescape(), cell, cell->module);
+				log_error("Reached unsupport cell %s (%s in %s)\n", log_id(cell->type), log_id(cell), log_id(cell->module));
 			Module *def = design->module(cell->type);
 			log_assert(def);
 			levels.push_back(Level(index.modules.at(def), cell));
@@ -588,10 +588,10 @@ struct Index {
 					Wire *w = def->wire(portname);
 					if (!w)
 						log_error("Output port %s on instance %s of %s doesn't exist\n",
-								  portname.unescape(), driver, def);
+								  log_id(portname), log_id(driver), log_id(def));
 					if (bit.offset >= w->width)
 						log_error("Bit position %d of output port %s on instance %s of %s is out of range (port has width %d)\n",
-								  bit.offset, portname.unescape(), driver, def, w->width);
+								  bit.offset, log_id(portname), log_id(driver), log_id(def), w->width);
 					ret = visit(cursor, SigBit(w, bit.offset));
 				}
 				cursor.exit(*this);
@@ -607,11 +607,11 @@ struct Index {
 				IdString portname = bit.wire->name;
 				if (!instance->hasPort(portname))
 					log_error("Input port %s on instance %s of %s unconnected\n",
-							  portname.unescape(), instance, instance->type);
+							  log_id(portname), log_id(instance), log_id(instance->type));
 				auto &port = instance->getPort(portname);
 				if (bit.offset >= port.size())
 					log_error("Bit %d of input port %s on instance %s of %s unconnected\n",
-							  bit.offset, portname.unescape(), instance, instance->type.unescape());
+							  bit.offset, log_id(portname), log_id(instance), log_id(instance->type));
 				ret = visit(cursor, port[bit.offset]);
 			}
 			cursor.enter(*this, instance);
@@ -990,7 +990,7 @@ struct XAigerWriter : AigerWriter {
 			} else if (!is_input && !inputs) {
 				for (auto &bit : conn.second) {
 					if (!bit.wire || (bit.wire->port_input && !bit.wire->port_output))
-						log_error("Bad connection %s/%s ~ %s\n", box, conn.first.unescape(), conn.second);
+						log_error("Bad connection %s/%s ~ %s\n", log_id(box), log_id(conn.first), log_signal(conn.second));
 
 
 					ensure_pi(bit, cursor);
@@ -1015,9 +1015,9 @@ struct XAigerWriter : AigerWriter {
 	void prep_boxes(int pending_pos_num)
 	{
 		XAigerAnalysis analysis;
-		log_debug("preforming analysis on '%s'\n", top);
+		log_debug("preforming analysis on '%s'\n", log_id(top));
 		analysis.analyze(top);
-		log_debug("analysis on '%s' done\n", top);
+		log_debug("analysis on '%s' done\n", log_id(top));
 
 		// boxes which have timing data, maybe a whitebox model
 		std::vector<std::tuple<HierCursor, Cell *, Module *>> nonopaque_boxes;
@@ -1031,7 +1031,7 @@ struct XAigerWriter : AigerWriter {
 			for (auto box : minfo.found_blackboxes) {
 				log_debug(" - %s.%s (type %s): ", cursor.path(),
 						  RTLIL::unescape_id(box->name),
-						  box->type.unescape());
+						  log_id(box->type));
 
 				Module *box_module = design->module(box->type), *box_derived;
 
@@ -1100,7 +1100,7 @@ struct XAigerWriter : AigerWriter {
 						} else {
 							// FIXME: hierarchical path
 							log_warning("connection on port %s[%d] of instance %s (type %s) missing, using 1'bx\n",
-										port_id.unescape(), i, box, box->type.unescape());
+										log_id(port_id), i, log_id(box), log_id(box->type));
 							bit = RTLIL::Sx;
 						}
 
@@ -1135,7 +1135,7 @@ struct XAigerWriter : AigerWriter {
 						} else {
 							// FIXME: hierarchical path
 							log_warning("connection on port %s[%d] of instance %s (type %s) missing\n",
-										port_id.unescape(), i, box, box->type.unescape());
+										log_id(port_id), i, log_id(box), log_id(box->type));
 							pad_pi();
 							continue;
 						}
@@ -1152,7 +1152,7 @@ struct XAigerWriter : AigerWriter {
 					holes_wb->setPort(port_id, w);
 				} else {
 					log_error("Ambiguous port direction on %s/%s\n",
-							  box->type.unescape(), port_id.unescape());
+							  log_id(box->type), log_id(port_id));
 				}
 			}
 		}
@@ -1348,7 +1348,7 @@ struct Aiger2Backend : Backend {
 				col = 0;
 			}
 			col += pair.first.size() + 2;
-			log("%s, ", pair.first.unescape());
+			log("%s, ", log_id(pair.first));
 		}
 		log("\n");
 		log("\n");
@@ -1365,7 +1365,7 @@ struct Aiger2Backend : Backend {
 				col = 0;
 			}
 			col += pair.first.size() + 2;
-			log("%s, ", pair.first.unescape());
+			log("%s, ", log_id(pair.first));
 		}
 		log("\n");
 	}

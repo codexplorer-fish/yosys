@@ -246,9 +246,9 @@ struct ChparamPass : public Pass {
 			if (!new_parameters.empty())
 				log_cmd_error("The options -set and -list cannot be used together.\n");
 			for (auto module : design->selected_modules()) {
-				log("%s:\n", module);
+				log("%s:\n", log_id(module));
 				for (auto param : module->avail_parameters)
-					log("  %s\n", param.unescape());
+					log("  %s\n", log_id(param));
 			}
 			return;
 		}

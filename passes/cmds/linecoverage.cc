@@ -93,9 +93,9 @@ struct CoveragePass : public Pass {
 		
 		for (auto module : design->modules())
 		{
-			log_debug("Module %s:\n", module);
+			log_debug("Module %s:\n", log_id(module));
 			for (auto wire: module->wires()) {
-				log_debug("%s\t%s\t%s\n", module->selected(wire) ? "*" : " ", wire->get_src_attribute(), wire->name.unescape());
+				log_debug("%s\t%s\t%s\n", module->selected(wire) ? "*" : " ", wire->get_src_attribute(), log_id(wire->name));
 				for (auto src: wire->get_strpool_attribute(ID::src)) {
 					auto filename = extract_src_filename(src);
 					if (filename.empty()) continue;
@@ -109,7 +109,7 @@ struct CoveragePass : public Pass {
 				}
 			}
 			for (auto cell: module->cells()) {
-				log_debug("%s\t%s\t%s\n", module->selected(cell) ? "*" : " ", cell->get_src_attribute(), cell->name.unescape());
+				log_debug("%s\t%s\t%s\n", module->selected(cell) ? "*" : " ", cell->get_src_attribute(), log_id(cell->name));
 				for (auto src: cell->get_strpool_attribute(ID::src)) {
 					auto filename = extract_src_filename(src);
 					if (filename.empty()) continue;

@@ -57,9 +57,9 @@ struct EquivInductWorker
 		for (auto cell : cells) {
 			if (!satgen.importCell(cell, step) && !cell_warn_cache.count(cell)) {
 				if (cell->is_builtin_ff())
-					log_warning("No SAT model available for async FF cell %s (%s).  Consider running `async2sync` or `clk2fflogic` first.\n", cell, cell->type.unescape());
+					log_warning("No SAT model available for async FF cell %s (%s).  Consider running `async2sync` or `clk2fflogic` first.\n", log_id(cell), log_id(cell->type));
 				else
-					log_warning("No SAT model available for cell %s (%s).\n", cell, cell->type.unescape());
+					log_warning("No SAT model available for cell %s (%s).\n", log_id(cell), log_id(cell->type));
 				cell_warn_cache.insert(cell);
 			}
 			if (cell->type == ID($equiv)) {
@@ -99,7 +99,7 @@ struct EquivInductWorker
 
 	void run()
 	{
-		log("Found %d unproven $equiv cells in module %s:\n", GetSize(workset), module);
+		log("Found %d unproven $equiv cells in module %s:\n", GetSize(workset), log_id(module));
 
 		if (satgen.model_undef) {
 			for (auto cell : cells)
@@ -249,7 +249,7 @@ struct EquivInductPass : public Pass {
 				}
 
 			if (unproven_equiv_cells.empty()) {
-				log("No selected unproven $equiv cells found in %s.\n", module);
+				log("No selected unproven $equiv cells found in %s.\n", log_id(module));
 				continue;
 			}
 

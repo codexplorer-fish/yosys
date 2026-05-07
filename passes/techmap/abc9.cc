@@ -398,7 +398,7 @@ struct Abc9Pass : public ScriptPass
 
 				for (auto mod : selected_modules) {
 					if (mod->processes.size() > 0) {
-						log("Skipping module %s as it contains processes.\n", mod);
+						log("Skipping module %s as it contains processes.\n", log_id(mod));
 						continue;
 					}
 
@@ -407,7 +407,7 @@ struct Abc9Pass : public ScriptPass
 
 					// this check does nothing because the above line adds the whole module to the selection
 					if (!active_design->selected_whole_module(mod))
-						log_error("Can't handle partially selected module %s!\n", mod);
+						log_error("Can't handle partially selected module %s!\n", log_id(mod));
 
 					std::string tempdir_name;
 					if (cleanup) 
@@ -428,7 +428,7 @@ struct Abc9Pass : public ScriptPass
 					log("Extracted %d AND gates and %d wires from module `%s' to a netlist network with %d inputs and %d outputs.\n",
 							active_design->scratchpad_get_int("write_xaiger.num_ands"),
 							active_design->scratchpad_get_int("write_xaiger.num_wires"),
-							mod,
+							log_id(mod),
 							active_design->scratchpad_get_int("write_xaiger.num_inputs"),
 							num_outputs);
 					if (num_outputs) {
@@ -441,7 +441,7 @@ struct Abc9Pass : public ScriptPass
 						else
 							abc9_exe_cmd += stringf(" -box %s", box_file);
 						run_nocheck(abc9_exe_cmd);
-						run_nocheck(stringf("read_aiger -xaiger -wideports -module_name %s$abc9 -map %s/input.sym %s/output.aig", mod, tempdir_name, tempdir_name));
+						run_nocheck(stringf("read_aiger -xaiger -wideports -module_name %s$abc9 -map %s/input.sym %s/output.aig", log_id(mod), tempdir_name, tempdir_name));
 						run_nocheck(stringf("abc9_ops -reintegrate %s", dff_mode ? "-dff" : ""));
 					}
 					else

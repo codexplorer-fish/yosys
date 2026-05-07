@@ -77,7 +77,7 @@ struct FmcombineWorker
 	void import_hier_cell(Cell *cell)
 	{
 		if (!cell->parameters.empty())
-			log_cmd_error("Cell %s.%s has unresolved instance parameters.\n", original, cell);
+			log_cmd_error("Cell %s.%s has unresolved instance parameters.\n", log_id(original), log_id(cell));
 
 		FmcombineWorker sub_worker(design, cell->type, opts);
 		sub_worker.generate();
@@ -99,7 +99,7 @@ struct FmcombineWorker
 			return;
 		}
 
-		log("Generating combined module %s from module %s.\n", combined_type.unescape(), orig_type.unescape());
+		log("Generating combined module %s from module %s.\n", log_id(combined_type), log_id(orig_type));
 		module = design->addModule(combined_type);
 
 		for (auto wire : original->wires()) {
@@ -332,15 +332,15 @@ struct FmcombinePass : public Pass {
 
 			module = design->module(module_name);
 			if (module == nullptr)
-				log_cmd_error("Module %s not found.\n", module_name.unescape());
+				log_cmd_error("Module %s not found.\n", log_id(module_name));
 
 			gold_cell = module->cell(gold_name);
 			if (gold_cell == nullptr)
-				log_cmd_error("Gold cell %s not found in module %s.\n", gold_name.unescape(), module);
+				log_cmd_error("Gold cell %s not found in module %s.\n", log_id(gold_name), log_id(module));
 
 			gate_cell = module->cell(gate_name);
 			if (gate_cell == nullptr)
-				log_cmd_error("Gate cell %s not found in module %s.\n", gate_name.unescape(), module);
+				log_cmd_error("Gate cell %s not found in module %s.\n", log_id(gate_name), log_id(module));
 		}
 		else
 		{
@@ -363,13 +363,13 @@ struct FmcombinePass : public Pass {
 
 		FmcombineWorker worker(design, gold_cell->type, opts);
 		worker.generate();
-		IdString combined_cell_name = module->uniquify(stringf("\\%s_%s", gold_cell, gate_cell));
+		IdString combined_cell_name = module->uniquify(stringf("\\%s_%s", log_id(gold_cell), log_id(gate_cell)));
 
 		Cell *cell = module->addCell(combined_cell_name, worker.combined_type);
 		cell->attributes = gold_cell->attributes;
 		cell->add_strpool_attribute(ID::src, gate_cell->get_strpool_attribute(ID::src));
 
-		log("Combining cells %s and %s in module %s into new cell %s.\n", gold_cell, gate_cell, module, cell);
+		log("Combining cells %s and %s in module %s into new cell %s.\n", log_id(gold_cell), log_id(gate_cell), log_id(module), log_id(cell));
 
 		for (auto &conn : gold_cell->connections())
 			cell->setPort(conn.first.str() + "_gold", conn.second);

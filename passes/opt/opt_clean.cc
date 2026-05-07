@@ -146,7 +146,7 @@ void rmunused_module_cells(Module *module, bool verbose)
 				if (bit.wire == nullptr && ct_all.cell_known(cell->type))
 					driver_driver_logs[raw_sigmap(raw_bit)].push_back(stringf("Driver-driver conflict "
 							"for %s between cell %s.%s and constant %s in %s: Resolved using constant.",
-							log_signal(raw_bit), cell, it2.first.unescape(), log_signal(bit), module));
+							log_signal(raw_bit), log_id(cell), log_id(it2.first), log_signal(bit), log_id(module)));
 				if (bit.wire != nullptr)
 					wire2driver[bit].insert(cell);
 			}
@@ -581,7 +581,7 @@ bool rmunused_module_init(RTLIL::Module *module, bool verbose)
 		}
 
 		if (verbose)
-			log_debug("  removing redundant init attribute on %s.\n", wire);
+			log_debug("  removing redundant init attribute on %s.\n", log_id(wire));
 
 		wire->attributes.erase(ID::init);
 		did_something = true;
